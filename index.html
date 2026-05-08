@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Engine 👑 Williams Ramos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #F97316;
+  --orange-dim: #7c3a0e;
+  --orange-glow: rgba(249,115,22,0.18);
+  --black: #0f0f0f;
+  --card: #181818;
+  --card2: #1f1f1f;
+  --border: rgba(255,255,255,0.07);
+  --border-orange: rgba(249,115,22,0.35);
+  --text: #f0f0f0;
+  --muted: #777;
+  --gold: #FFD700;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--black);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* BG GRID */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(var(--border) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* HEADER */
+.header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(15,15,15,0.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;
+}
+.logo{
+  font-family:'Syne',sans-serif;
+  font-size:15px;font-weight:700;
+  color:var(--text);
+  display:flex;align-items:center;gap:8px;
+}
+.logo-crown{font-size:18px}
+.logo span{color:var(--orange)}
+.key-pill{
+  display:flex;align-items:center;gap:6px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;padding:5px 12px;
+  cursor:pointer;
+  font-size:12px;color:var(--muted);
+  transition:all .2s;
+}
+.key-pill:hover{border-color:var(--orange);color:var(--text)}
+.key-dot{width:7px;height:7px;border-radius:50%;background:#e55;flex-shrink:0}
+.key-dot.ok{background:#4ade80}
+
+/* MAIN */
+.main{
+  position:relative;z-index:1;
+  max-width:720px;margin:0 auto;
+  padding:1.5rem 1rem 5rem;
+}
+
+/* HERO */
+.hero{
+  text-align:center;
+  padding:2.5rem 1rem 2rem;
+  margin-bottom:1.5rem;
+}
+.hero-tag{
+  display:inline-block;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--orange);font-weight:500;
+  border:1px solid var(--border-orange);
+  border-radius:20px;padding:4px 14px;margin-bottom:1rem;
+  font-family:'Syne',sans-serif;
+}
+.hero-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(28px,6vw,42px);
+  font-weight:800;line-height:1.1;
+  margin-bottom:.75rem;
+}
+.hero-title em{color:var(--orange);font-style:normal;}
+.hero-sub{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* TABS */
+.tabs{
+  display:flex;gap:4px;flex-wrap:wrap;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;padding:5px;
+  margin-bottom:1.5rem;
+}
+.tab{
+  flex:1;min-width:100px;
+  padding:8px 10px;border-radius:10px;
+  font-size:12px;font-weight:500;
+  cursor:pointer;
+  color:var(--muted);
+  border:none;background:none;
+  transition:all .2s;
+  font-family:'DM Sans',sans-serif;
+  text-align:center;
+  white-space:nowrap;
+}
+.tab:hover{color:var(--text)}
+.tab.active{background:var(--orange);color:#fff}
+.tab .ti{display:block;font-size:16px;margin-bottom:2px}
+
+/* VIEW */
+.view{display:none}
+.view.active{display:block}
+animation-fade{animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION LABEL */
+.slabel{
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;
+  margin-bottom:.5rem;font-family:'Syne',sans-serif;
+}
+
+/* FILTER ROW */
+.frow{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1rem}
+.fbtn{
+  padding:6px 13px;border-radius:20px;
+  font-size:12px;font-weight:500;cursor:pointer;
+  border:1px solid var(--border);
+  background:transparent;color:var(--muted);
+  transition:all .2s;font-family:'DM Sans',sans-serif;
+}
+.fbtn:hover{border-color:var(--orange);color:var(--text)}
+.fbtn.on{background:var(--orange);color:#fff;border-color:var(--orange)}
+
+/* IDEA CARD */
+.idea-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:1.125rem 1.25rem;
+  margin-bottom:.75rem;
+  transition:border-color .2s;
+  animation:fadeIn .3s ease both;
+}
+.idea-card:hover{border-color:var(--border-orange)}
+.idea-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.625rem}
+.tag{
+  font-size:10px;font-weight:600;letter-spacing:.06em;
+  padding:3px 9px;border-radius:20px;
+  font-family:'Syne',sans-serif;
+}
+.tag-n{background:rgba(249,115,22,.15);color:var(--orange)}
+.tag-t{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border)}
+.idea-hook{
+  font-family:'Syne',sans-serif;
+  font-size:14px;font-weight:700;
+  color:var(--text);line-height:1.4;
+  margin-bottom:.375rem;
+}
+.idea-angle{font-size:13px;color:#aaa;line-height:1.55;margin-bottom:.625rem}
+.idea-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.link-btn{
+  font-size:11px;color:var(--orange);cursor:pointer;
+  display:flex;align-items:center;gap:4px;
+  font-weight:500;
+}
+.link-btn:hover{opacity:.8}
+.save-btn{
+  font-size:11px;color:var(--muted);cursor:pointer;
+  margin-left:auto;
+  padding:5px 10px;border-radius:8px;
+  border:1px solid var(--border);
+  background:transparent;
+  font-family:'DM Sans',sans-serif;
+  transition:all .2s;
+}
+.save-btn:hover{border-color:var(--orange);color:var(--orange)}
+.save-btn.saved{color:var(--gold);border-color:rgba(255,215,0,.3)}
+
+/* STRUCT BOX */
+.struct-box{
+  background:var(--card2);
+  border-left:2px solid var(--orange);
+  border-radius:0 10px 10px 0;
+  padding:.875rem 1rem;
+  margin-top:.75rem;
+  display:none;
+  animation:fadeIn .2s ease;
+}
+.struct-box.open{display:block}
+.struct-title{
+  font-size:10px;color:var(--orange);
+  font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  font-family:'Syne',sans-serif;margin-bottom:.625rem;
+}
+.struct-steps{list-style:none}
+.struct-steps li{
+  font-size:12px;color:#bbb;
+  padding:.375rem 0;
+  border-bottom:1px solid var(--border);
+  line-height:1.6;
+  display:flex;gap:8px;align-items:flex-start;
+}
+.struct-steps li:last-child{border-bottom:none}
+.step-num{
+  font-family:'Syne',sans-serif;
+  font-size:10px;font-weight:700;
+  color:var(--orange);
+  min-width:18px;margin-top:2px;
+}
+.struct-example{
+  margin-top:.5rem;
+  font-size:12px;
+  color:var(--orange);
+  font-style:italic;
+}
+
+/* BUTTONS */
+.gen-btn{
+  width:100%;padding:13px;
+  background:var(--orange);color:#fff;
+  border:none;border-radius:12px;
+  font-size:14px;font-weight:600;cursor:pointer;
+  transition:all .2s;margin-top:.75rem;
+  font-family:'Syne',sans-serif;
+  letter-spacing:.03em;
+}
+.gen-btn:hover{background:#ea6a00;transform:translateY(-1px);box-shadow:0 8px 24px var(--orange-glow)}
+.gen-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.ai-btn{
+  width:100%;padding:13px;
+  background:transparent;color:var(--text);
+  border:1px solid var(--border-orange);
+  border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;
+  transition:all .2s;margin-top:.625rem;
+  font-family:'Syne',sans-serif;letter-spacing:.03em;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.ai-btn:hover{background:var(--orange-glow);border-color:var(--orange)}
+.ai-btn:disabled{opacity:.45;cursor:not-allowed}
+.ai-badge{
+  font-size:10px;background:var(--orange);color:#fff;
+  padding:2px 7px;border-radius:6px;font-weight:700;
+  letter-spacing:.05em;
+}
+
+/* INPUTS */
+textarea,input[type=text],input[type=password]{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;padding:.875rem 1rem;
+  font-size:13px;color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  line-height:1.6;resize:vertical;
+  transition:border-color .2s;
+}
+textarea{min-height:90px}
+textarea:focus,input:focus{outline:none;border-color:var(--orange)}
+textarea::placeholder,input::placeholder{color:var(--muted)}
+
+/* RESULT BOX */
+.result-box{
+  background:var(--card2);
+  border:1px solid var(--border-orange);
+  border-radius:14px;
+  padding:1.25rem;margin-top:1rem;
+  display:none;animation:fadeIn .3s ease;
+}
+.result-box.open{display:block}
+.result-label{
+  font-size:10px;color:var(--orange);
+  font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-family:'Syne',sans-serif;margin-bottom:.875rem;
+  display:flex;align-items:center;gap:6px;
+}
+.result-content{
+  font-size:13px;color:#ccc;
+  line-height:1.75;white-space:pre-wrap;
+}
+
+/* ERROR */
+.err-box{
+  background:rgba(239,68,68,.08);
+  border:1px solid rgba(239,68,68,.3);
+  border-radius:10px;padding:.875rem 1rem;
+  margin-top:.75rem;font-size:12px;color:#fca5a5;
+  display:none;line-height:1.6;
+}
+.err-box.open{display:block}
+
+/* LOADING */
+.loading{
+  text-align:center;padding:2rem;
+  color:var(--muted);font-size:13px;
+  display:flex;flex-direction:column;align-items:center;gap:.75rem;
+}
+.spinner{
+  width:28px;height:28px;border-radius:50%;
+  border:2px solid var(--border);
+  border-top-color:var(--orange);
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SAVED */
+.saved-item{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:1rem 1.125rem;
+  margin-bottom:.625rem;
+  display:flex;gap:12px;align-items:flex-start;
+  transition:border-color .2s;
+}
+.saved-item:hover{border-color:var(--border-orange)}
+.saved-body{flex:1;min-width:0}
+.saved-meta{
+  font-size:10px;color:var(--orange);font-weight:600;
+  font-family:'Syne',sans-serif;letter-spacing:.06em;
+  margin-bottom:5px;
+}
+.saved-hook{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:3px;font-family:'Syne',sans-serif}
+.saved-struct{font-size:11px;color:var(--muted);line-height:1.5}
+.saved-actions{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.copy-btn,.del-btn{
+  font-size:11px;padding:4px 10px;border-radius:7px;
+  cursor:pointer;border:1px solid var(--border);
+  background:transparent;font-family:'DM Sans',sans-serif;
+  transition:all .2s;
+}
+.copy-btn{color:var(--orange)}
+.copy-btn:hover{background:var(--orange-glow);border-color:var(--orange)}
+.del-btn{color:var(--muted)}
+.del-btn:hover{color:#fca5a5;border-color:rgba(239,68,68,.3)}
+.empty{
+  text-align:center;padding:3rem 1rem;
+  color:var(--muted);font-size:13px;
+  border:1px dashed var(--border);border-radius:14px;
+}
+.empty-icon{font-size:32px;display:block;margin-bottom:.75rem}
+
+/* KEY MODAL */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.8);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem;
+  display:none;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--card);border:1px solid var(--border-orange);
+  border-radius:18px;padding:1.75rem;
+  width:100%;max-width:440px;
+  animation:fadeIn .25s ease;
+}
+.modal-title{
+  font-family:'Syne',sans-serif;font-size:17px;font-weight:700;
+  margin-bottom:.375rem;
+}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:1.25rem;line-height:1.6}
+.modal-steps{
+  background:var(--card2);border-radius:10px;
+  padding:.875rem 1rem;margin-bottom:1.25rem;
+}
+.modal-step{
+  font-size:12px;color:#bbb;padding:.3rem 0;
+  display:flex;gap:8px;align-items:flex-start;line-height:1.5;
+}
+.modal-step-num{color:var(--orange);font-weight:700;font-size:11px;min-width:16px}
+.modal-btn-row{display:flex;gap:.625rem;margin-top:1rem}
+.modal-save{
+  flex:1;padding:11px;background:var(--orange);color:#fff;
+  border:none;border-radius:10px;font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'Syne',sans-serif;
+  transition:all .2s;
+}
+.modal-save:hover{background:#ea6a00}
+.modal-cancel{
+  padding:11px 16px;background:transparent;color:var(--muted);
+  border:1px solid var(--border);border-radius:10px;font-size:13px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .2s;
+}
+.modal-cancel:hover{color:var(--text)}
+
+/* SAVED COUNT BADGE */
+.tab-badge{
+  display:inline-block;
+  background:var(--orange);color:#fff;
+  font-size:9px;font-weight:700;
+  padding:1px 5px;border-radius:6px;
+  margin-left:3px;vertical-align:middle;
+}
+
+/* SECTION DIVIDER */
+.sdiv{border:none;border-top:1px solid var(--border);margin:1.25rem 0}
+
+/* MULTI TOGGLE */
+.multi-filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.875rem}
+
+/* TIP */
+.tip-box{
+  background:rgba(249,115,22,.06);
+  border:1px solid var(--border-orange);
+  border-radius:10px;padding:.75rem 1rem;
+  font-size:12px;color:#f4c08a;
+  margin-bottom:1rem;line-height:1.6;
+}
+.tip-box strong{color:var(--orange)}
+
+/* RESPONSIVE */
+@media(max-width:480px){
+  .hero-title{font-size:26px}
+  .tab{font-size:11px;padding:7px 6px}
+  .tab .ti{font-size:14px}
+  .modal{padding:1.25rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">
+    <span class="logo-crown">👑</span>
+    Williams<span>Ramos</span>
+  </div>
+  <div class="key-pill" onclick="openModal()">
+    <div class="key-dot" id="key-dot"></div>
+    <span id="key-label">Configurar API</span>
+  </div>
+</header>
+
+<!-- MODAL API KEY -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title">Configurar API de Gemini</div>
+    <div class="modal-sub">Necesitás una API key gratuita de Google para activar las funciones de IA. No cuesta nada.</div>
+    <div class="modal-steps">
+      <div class="modal-step"><span class="modal-step-num">1.</span>Entrá a <strong style="color:var(--orange)">aistudio.google.com</strong></div>
+      <div class="modal-step"><span class="modal-step-num">2.</span>Iniciá sesión con tu cuenta de Google</div>
+      <div class="modal-step"><span class="modal-step-num">3.</span>Hacé clic en "Get API key" → "Create API key"</div>
+      <div class="modal-step"><span class="modal-step-num">4.</span>Copiá la key y pegala abajo</div>
+    </div>
+    <div class="slabel">Tu API Key (se guarda solo en este navegador)</div>
+    <input type="password" id="api-key-input" placeholder="AIza...">
+    <div class="modal-btn-row">
+      <button class="modal-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="modal-save" onclick="saveKey()">Guardar key ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="hero">
+    <div class="hero-tag">Content Engine v3.0</div>
+    <h1 class="hero-title">Ideas <em>infinitas</em><br>para tu marca</h1>
+    <p class="hero-sub">Generá, expandí y analizá contenido para tus 3 nichos<br>con IA — directo desde el móvil</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="sw('gen')"><span class="ti">⚡</span>Ideas</button>
+    <button class="tab" onclick="sw('expand')"><span class="ti">🔀</span>Expandir</button>
+    <button class="tab" onclick="sw('analyze')"><span class="ti">🔍</span>Analizar</button>
+    <button class="tab" onclick="sw('saved')"><span class="ti">📌</span>Guardadas<span class="tab-badge" id="sc" style="display:none">0</span></button>
+  </div>
+
+  <!-- ======================== GEN IDEAS ======================== -->
+  <div class="view active" id="v-gen">
+    <div class="slabel">Nicho</div>
+    <div class="frow" id="nf">
+      <button class="fbtn on" data-v="all" onclick="setF('n',this)">Todos</button>
+      <button class="fbtn" data-v="fondeo" onclick="setF('n',this)">💰 Fondeo</button>
+      <button class="fbtn" data-v="simple" onclick="setF('n',this)">📊 Trading simple</button>
+      <button class="fbtn" data-v="rent" onclick="setF('n',this)">🎯 Rentabilidad</button>
+    </div>
+    <div class="slabel">Tipo de contenido</div>
+    <div class="frow" id="tf">
+      <button class="fbtn on" data-v="all" onclick="setF('t',this)">Todos</button>
+      <button class="fbtn" data-v="edu" onclick="setF('t',this)">📚 Educativo</button>
+      <button class="fbtn" data-v="story" onclick="setF('t',this)">🎬 Storytelling</button>
+      <button class="fbtn" data-v="venta" onclick="setF('t',this)">💎 Venta</button>
+      <button class="fbtn" data-v="alcance" onclick="setF('t',this)">🚀 Alcance</button>
+    </div>
+    <div id="ideas-out"></div>
+    <button class="gen-btn" id="gbtn" onclick="genIdeas()">Nuevas ideas del banco ↻</button>
+    <button class="ai-btn" id="aibtn" onclick="genAI()">
+      <span>Generar con IA (ideas únicas)</span>
+      <span class="ai-badge">GEMINI</span>
+    </button>
+    <div class="err-box" id="gen-err"></div>
+  </div>
+
+  <!-- ======================== EXPAND ======================== -->
+  <div class="view" id="v-expand">
+    <div class="tip-box"><strong>¿Cómo funciona?</strong> Escribí cualquier idea o tema que tengas en mente — aunque sea vaga — y la IA la subdivide en múltiples ángulos por nicho y formato, con estructura y guión listo para grabar.</div>
+    <div class="slabel">Tu idea o tema</div>
+    <textarea id="user-idea" placeholder="Ej: quiero hablar sobre cómo pasar un desafío de fondeo sin quemarlo en el primer día..."></textarea>
+    <hr class="sdiv">
+    <div class="slabel">Nichos a generar</div>
+    <div class="multi-filters" id="en-filters">
+      <button class="fbtn on" data-v="fondeo" onclick="toggleMulti(this)">💰 Fondeo</button>
+      <button class="fbtn on" data-v="simple" onclick="toggleMulti(this)">📊 Trading simple</button>
+      <button class="fbtn on" data-v="rent" onclick="toggleMulti(this)">🎯 Rentabilidad</button>
+    </div>
+    <div class="slabel">Tipos de contenido</div>
+    <div class="multi-filters" id="et-filters">
+      <button class="fbtn on" data-v="edu" onclick="toggleMulti(this)">📚 Educativo</button>
+      <button class="fbtn on" data-v="story" onclick="toggleMulti(this)">🎬 Storytelling</button>
+      <button class="fbtn on" data-v="venta" onclick="toggleMulti(this)">💎 Venta</button>
+      <button class="fbtn on" data-v="alcance" onclick="toggleMulti(this)">🚀 Alcance</button>
+    </div>
+    <button class="ai-btn" id="exp-btn" onclick="expandIdea()">
+      <span>Expandir y subdividir con IA</span>
+      <span class="ai-badge">GEMINI</span>
+    </button>
+    <div class="result-box" id="exp-out"></div>
+    <div class="err-box" id="exp-err"></div>
+  </div>
+
+  <!-- ======================== ANALYZE ======================== -->
+  <div class="view" id="v-analyze">
+    <div class="tip-box"><strong>Nota:</strong> La IA no puede acceder directamente a links de TikTok/Instagram. Pegá la descripción, el caption o una transcripción del video para análisis profundo.</div>
+    <div class="slabel">Link del video (referencia)</div>
+    <input type="text" id="url-input" placeholder="https://www.tiktok.com/@...">
+    <hr class="sdiv">
+    <div class="slabel">Descripción o transcripción del video</div>
+    <textarea id="video-desc" placeholder="Ej: El video abre con 'el 90% de traders pierde por esto que nadie te dice...' — luego explica 3 errores usando pantalla de charts con voz en off, usa texto en pantalla en cada punto, cierra con 'link en bio para el curso'. Tiene 400k views, 15k likes, 2k comentarios con gente preguntando el precio." style="min-height:110px"></textarea>
+    <hr class="sdiv">
+    <div class="slabel">¿Qué querés hacer?</div>
+    <div class="frow" id="ana-type">
+      <button class="fbtn on" data-v="analizar" onclick="setAna(this)">🔬 Solo analizar</button>
+      <button class="fbtn" data-v="generar" onclick="setAna(this)">💡 Solo generar ideas</button>
+      <button class="fbtn" data-v="ambos" onclick="setAna(this)">⚡ Analizar + ideas</button>
+    </div>
+    <div class="slabel">Nicho para las ideas generadas</div>
+    <div class="frow" id="ana-niche">
+      <button class="fbtn on" data-v="all" onclick="setF('an',this)">Todos</button>
+      <button class="fbtn" data-v="fondeo" onclick="setF('an',this)">💰 Fondeo</button>
+      <button class="fbtn" data-v="simple" onclick="setF('an',this)">📊 Trading simple</button>
+      <button class="fbtn" data-v="rent" onclick="setF('an',this)">🎯 Rentabilidad</button>
+    </div>
+    <button class="ai-btn" id="ana-btn" onclick="analyzeVideo()">
+      <span>Analizar con IA</span>
+      <span class="ai-badge">GEMINI</span>
+    </button>
+    <div class="result-box" id="ana-out"></div>
+    <div class="err-box" id="ana-err"></div>
+  </div>
+
+  <!-- ======================== SAVED ======================== -->
+  <div class="view" id="v-saved">
+    <div id="saved-list"></div>
+  </div>
+
+</main>
+
+<script>
+// ============================================================
+// BANCO DE IDEAS
+// ============================================================
+const IDEAS = [
+  {
+    n:"fondeo", t:"edu",
+    hook:"Cómo pasar un desafío de fondeo sin quemar la cuenta en el intento",
+    angle:"Los 3 errores que hacen fallar al 80% de los traders. Contado desde tu propia experiencia de haberlos cometido todos.",
+    struct:[
+      {s:"HOOK (0-5s)", d:"Abrís diciendo: 'El 80% de los traders que compran una cuenta fondeada la pierden en menos de 7 días. Y cometen exactamente los mismos 3 errores. Yo los cometí todos.'", ex:"Pausás 1 segundo después de 'todos' para generar tensión."},
+      {s:"ERROR 1 (5-35s)", d:"Over-trading: operar más veces de las necesarias para recuperar pérdidas. Explicás con número: '¿Cuántas operaciones hacías al día? ¿Por qué?'", ex:"'Yo llegué a hacer 12 operaciones en un día queriendo recuperar. Resultado: drawdown al límite en 3 horas.'"},
+      {s:"ERROR 2 (35-65s)", d:"No respetar el drawdown máximo. Explicás qué es el trailing drawdown y cómo destruye cuentas sin que el trader lo entienda.", ex:"'No es el drawdown diario que te mata, es el trailing. Si no sabés qué es eso, ya perdiste.'"},
+      {s:"ERROR 3 (65-90s)", d:"Operar noticias sin saberlo. Explicás cómo los eventos de alta volatilidad destruyen SL automáticamente.", ex:"Mostrás en pantalla un calendario económico y un ejemplo real."},
+      {s:"CTA (90-100s)", d:"'Si querés que te enseñe cómo evitar estos 3 errores y pasar tu primera cuenta fondeada, el link está en bio.'", ex:"Decirlo mientras apuntás hacia arriba si es TikTok o hacia el lado si es Reel."}
+    ]
+  },
+  {
+    n:"fondeo", t:"edu",
+    hook:"Las reglas de la cuenta de fondeo que nadie te explica antes de comprarla",
+    angle:"Información que las firmas no destacan y que hace que la gente pierda la cuenta sin entender por qué.",
+    struct:[
+      {s:"HOOK (0-5s)", d:"'Compraste una cuenta de fondeo sin leer estas 3 reglas. Y si las rompés, perdés todo sin recuperación.'", ex:"Tono serio, directo. Sin música ruidosa al inicio."},
+      {s:"REGLA 1 (5-30s)", d:"Trailing Drawdown: cómo funciona, con ejemplo en números reales. '$10,000 de cuenta. Llegás a $10,500 de profit máximo. Tu drawdown ya no es desde $10k, es desde $10,500.'", ex:"Mostrás la matemática en pantalla o pizarrón."},
+      {s:"REGLA 2 (30-55s)", d:"Días mínimos de operación: muchas firmas exigen operar X días antes de poder retirar. Explicás cuáles y por qué importa.", ex:"Mostrás captura de las reglas de una firma real (sin nombrarla negativamente)."},
+      {s:"REGLA 3 (55-80s)", d:"Actividades prohibidas: noticias, martingala, grid, copiado de señales. Explicás cuáles invalidan la cuenta.", ex:"'Usé un EA una sola vez. Me suspendieron la cuenta al instante.'"},
+      {s:"CTA (80-90s)", d:"'¿Querés saber cómo pasar la cuenta respetando estas reglas? Te enseño en El Camino del Rey.'", ex:""}
+    ]
+  },
+  {
+    n:"fondeo", t:"story",
+    hook:"Cómo perdí mi primera cuenta de fondeo en 2 días (y qué aprendí)",
+    angle:"Historia real de vulnerabilidad + lección. Genera confianza porque muestra que sos humano y honesto.",
+    struct:[
+      {s:"HOOK (0-5s)", d:"'Compré mi primera cuenta de fondeo. La perdí en 48 horas. Acá te cuento exactamente qué hice mal.'", ex:"Sin música, cara en cámara, tono tranquilo no dramático."},
+      {s:"CONTEXTO (5-25s)", d:"Qué sentiste cuando la compraste. La emoción, la expectativa. Hacés que el espectador se identifique.", ex:"'Sentí que era el momento. Que esta vez sí iba a funcionar. Que ya estaba listo.'"},
+      {s:"EL ERROR (25-55s)", d:"Qué hice exactamente. Qué decisiones tomé. Números reales si podés.", ex:"'El primer día operé 8 veces. Gané 4, perdí 4. El segundo día quise recuperar y operé en noticias. Game over.'"},
+      {s:"QUIEBRE (55-70s)", d:"Qué sentiste cuando lo perdiste. No lo dramatizás pero lo mostrás honestamente.", ex:"'No fue bronca. Fue vergüenza. Porque sabía que era mi culpa.'"},
+      {s:"LECCIÓN (70-90s)", d:"Qué aprendiste. Una sola cosa, concreta. No una lista de 10 puntos.", ex:"'Aprendí que el trading fondeado no te premia por ser bueno. Te castiga por no ser consistente.'"},
+      {s:"CTA", d:"Pregunta abierta para comentarios: '¿Vos también perdiste tu primera cuenta? Contame abajo.'", ex:""}
+    ]
+  },
+  {
+    n:"fondeo", t:"alcance",
+    hook:"¿Sabías que podés operar $100,000 sin tener ese dinero?",
+    angle:"Explica el concepto de fondeo en 30 segundos para alguien que nunca oyó hablar. Alto potencial viral.",
+    struct:[
+      {s:"HOOK (0-4s)", d:"'Existe una forma de operar $100,000 en los mercados financieros sin tener ese dinero. Se llama cuenta fondeada.'", ex:"Cortante y directo. No hay introducción."},
+      {s:"QUÉ ES (4-25s)", d:"Explicás el modelo en lenguaje de cualquier persona. Una firma te presta el capital, vos operás y dividís las ganancias.", ex:"'Es como si una empresa te diera su dinero para invertir. Si ganás, te llevás el 80%. Si perdés... perdiste la cuenta, no tu dinero.'"},
+      {s:"CÓMO FUNCIONA (25-45s)", d:"El desafío de evaluación. Qué hay que hacer para acceder. Lo básico.", ex:"'Primero hacés una prueba. Demostrás que podés ser rentable con reglas claras. Si pasás, te dan el capital real.'"},
+      {s:"CIERRE + CTA (45-55s)", d:"'Si querés aprender cómo pasar esa prueba y acceder a capital real, te enseño en El Camino del Rey.'", ex:""}
+    ]
+  },
+  {
+    n:"fondeo", t:"venta",
+    hook:"Al terminar El Camino del Rey te doy una cuenta de $12,000. Sin trampa.",
+    angle:"Venta directa del producto. Precio vs valor. Termina con CTA fuerte.",
+    struct:[
+      {s:"HOOK (0-5s)", d:"'Al terminar mi programa, no te doy un certificado. Te doy una cuenta de $12,000 para operar capital real.'", ex:"Tono seguro. No defensivo. No vendedor. Declarativo."},
+      {s:"EL PROGRAMA (5-35s)", d:"Explicás brevemente qué es El Camino del Rey: 4 módulos, 50+ clases, seguimiento, proyecto final.", ex:"'No son videos grabados y chau. Cada error que cometés, yo lo corrijo. Eso es lo que me diferencia.'"},
+      {s:"EL FONDEO (35-55s)", d:"Cómo funciona el fondeo al final. Qué necesitás hacer para ganártelo. La tesis.", ex:"'Al final del programa entregás un proyecto. Es como una tesis. Cuando yo veo que sos capaz de manejar capital, te doy la cuenta.'"},
+      {s:"PRUEBA SOCIAL (55-75s)", d:"15 de 18 alumnos retirando. Número de fondeos entregados. Testimonios si tenés.", ex:"'El 83% de los traders que pasan por El Camino del Rey retiran del trading. Ese es mi número real.'"},
+      {s:"PRECIO + CTA (75-90s)", d:"'$97 el programa completo. Acceso de por vida. Cuenta de $12k al final. Link en bio.'", ex:"Decirlo sin disculpas. El precio es el precio."}
+    ]
+  },
+  {
+    n:"simple", t:"edu",
+    hook:"La estrategia más simple que uso para entrar al mercado (sin 10 indicadores)",
+    angle:"Muestra tu setup real en pantalla. La simplicidad como diferenciador frente a traders que complican todo.",
+    struct:[
+      {s:"HOOK (0-5s)", d:"'Esta es la estrategia que uso para entrar al mercado. No tiene 10 indicadores. No tiene señales. Tiene 3 cosas.'", ex:"Abrís directo con pantalla de chart o cara en cámara."},
+      {s:"ELEMENTO 1 (5-30s)", d:"Estructura de mercado: explicás HH/HL o LH/LL en el chart. Mostrás en pantalla con marcadores.", ex:"'Primero identifico la dirección. ¿Estamos haciendo máximos o mínimos más altos? Eso me dice el sesgo.'"},
+      {s:"ELEMENTO 2 (30-55s)", d:"Punto de interés: order block o zona de demanda/oferta donde el precio puede reaccionar.", ex:"'Luego busco dónde el precio dejó una huella institucional. Ahí es donde voy a buscar la entrada.'"},
+      {s:"ELEMENTO 3 (55-75s)", d:"Confirmación: un patrón de vela o BOS en temporalidad menor que confirma la entrada.", ex:"'No entro cuando el precio llega a la zona. Entro cuando el precio me confirma que quiere ir para el lado que yo espero.'"},
+      {s:"RESUMEN + CTA (75-90s)", d:"Repetís los 3 pasos rápido. CTA: 'Si querés ver cómo aplicar esto en práctica, te enseño paso a paso en El Camino del Rey.'", ex:""}
+    ]
+  },
+  {
+    n:"simple", t:"story",
+    hook:"Tardé 3 años en entender que el trading simple es el que funciona",
+    angle:"Historia personal de la complejidad al simplify. Genera mucha identificación en traders que se sienten perdidos.",
+    struct:[
+      {s:"HOOK (0-5s)", d:"'Pasé 3 años poniendo más y más indicadores en el chart creyendo que así iba a ganar más. Resultado: perdía más.'", ex:"Tono casi de confesión. Honesto."},
+      {s:"EL ANTES (5-30s)", d:"Describís tu pantalla de antes. Cuántos indicadores, qué tan confuso se veía. La parálisis de análisis.", ex:"'Tenía RSI, MACD, Bandas de Bollinger, 3 EMAs, el ichimoku, fibonaccis... y aún así no sabía qué hacer.'"},
+      {s:"EL QUIEBRE (30-55s)", d:"El momento en que decidiste simplificar. Qué pasó que te hizo cambiar.", ex:"'Un día vi el chart de un trader que ganaba consistentemente y tenía solo las velas. Sin nada más. Ahí entendí.'"},
+      {s:"EL DESPUÉS (55-75s)", d:"Cómo cambió tu trading cuando simplificaste. Qué eliminaste y qué quedó.", ex:"'Saqué todo. Me quedé con estructura de mercado y zonas de valor. Empecé a ver el mercado diferente.'"},
+      {s:"LECCIÓN + CTA (75-90s)", d:"'La simplicidad no es falta de conocimiento. Es la destilación de todo el conocimiento en lo que realmente importa.'", ex:"Pregunta abierta: '¿Cuántos indicadores tenés en tu chart ahora mismo?'"}
+    ]
+  },
+  {
+    n:"simple", t:"alcance",
+    hook:"¿Por qué el 90% de traders pierde? (No es lo que crees)",
+    angle:"Mito vs realidad. La respuesta sorprende porque contradice lo que la gente asume. Alto potencial viral.",
+    struct:[
+      {s:"HOOK (0-4s)", d:"'El 90% de los traders pierde dinero. La mayoría cree que es por falta de estrategia. Se equivocan.'", ex:"Pausás después de 'se equivocan'. El silencio retiene."},
+      {s:"EL MITO (4-20s)", d:"Explicás qué creen la mayoría: que necesitan más estrategias, más indicadores, más señales.", ex:"'La gente gasta miles en cursos de estrategia creyendo que el problema es no saber cómo entrar. Error.'"},
+      {s:"LA REALIDAD (20-50s)", d:"Dos causas reales: gestión de riesgo y psicología. Explicás brevemente cada una.", ex:"'El 90% que pierde sabe cómo entrar al mercado. Pero no sabe cuánto arriesgar por operación ni cómo manejar una racha perdedora.'"},
+      {s:"LA PRUEBA (50-70s)", d:"Un dato o ejemplo que valida tu punto. Puede ser tu experiencia o la de un alumno.", ex:"'Yo tuve alumnos que llegaron con estrategias buenísimas. Perdían igual. Hasta que trabajamos la psicología y el riesgo.'"},
+      {s:"CTA (70-80s)", d:"'¿Querés saber qué es lo que realmente te falta para ser rentable? Comentá QUIERO abajo y te lo explico.'", ex:""}
+    ]
+  },
+  {
+    n:"rent", t:"story",
+    hook:"El día que retiré del trading por primera vez (y por qué casi no lo hice)",
+    angle:"Historia emocional del primer retiro. Genera aspiración en quien todavía no logró retirar.",
+    struct:[
+      {s:"HOOK (0-5s)", d:"'Me acuerdo exactamente el día que hice mi primer retiro del trading. Y casi no lo hago por miedo.'", ex:"Tono cálido, nostálgico. No eufórico."},
+      {s:"EL CONTEXTO (5-25s)", d:"Cuánto tiempo llevabas sin retirar. Qué pasó esa semana que funcionó diferente.", ex:"'Llevaba más de 2 años operando. Viendo retiros de otras personas. Sin poder lograrlo yo.'"},
+      {s:"EL MOMENTO (25-55s)", d:"Describís el momento exacto. Tenías el profit, tenías el botón de retiro. Qué sentiste.", ex:"'Llegué a $300 de profit en la cuenta. Podía retirarlo. Y me paralicé. ¿Y si era suerte? ¿Y si lo volvía a perder?'"},
+      {s:"LA DECISIÓN (55-70s)", d:"Qué te llevó a hacerlo igual. Qué te dijiste a vos mismo.", ex:"'Me dije: si no retiro ahora, nunca voy a saber si esto es real. Y lo hice.'"},
+      {s:"EL MENSAJE (70-90s)", d:"La lección emocional detrás. No sobre estrategia, sobre mentalidad.", ex:"'El primer retiro no es sobre el dinero. Es sobre demostrarte que es posible. Y eso cambia todo.'"}
+    ]
+  },
+  {
+    n:"rent", t:"edu",
+    hook:"La gestión del riesgo que te separa de quemar la cuenta para siempre",
+    angle:"Explicación concreta del 1-2% por operación y por qué la mayoría lo ignora aunque lo sabe.",
+    struct:[
+      {s:"HOOK (0-5s)", d:"'Sabés que no debés arriesgar más del 2% por operación. Y aun así lo hacés. Acá te explico por qué eso te está destruyendo.'", ex:"Interpelación directa. No acusatoria, empática."},
+      {s:"EL PROBLEMA (5-30s)", d:"Por qué la gente ignora el 2%. Emociones, sesgo de recuperación, FOMO. Con ejemplo numérico.", ex:"'Si arriesgás el 10% por operación y perdés 5 seguidas (que pasa), tu cuenta se redujo a la mitad. Con el 2%, todavía tenés el 90% del capital.'"},
+      {s:"LA MATEMÁTICA (30-60s)", d:"Mostrás los números en pantalla. La diferencia entre 1%, 2% y 10% de riesgo en una racha de 10 operaciones perdedoras.", ex:"Tabla simple o cálculo en vivo."},
+      {s:"EL DRAWDOWN PERSONAL (60-80s)", d:"Explicás qué es el drawdown máximo personal y por qué cada trader debe definir el suyo antes de operar.", ex:"'Antes de abrir cualquier operación, ya tengo definido cuánto puedo perder en el mes. Cuando llego a ese límite, paro. Sin negociación.'"},
+      {s:"CTA (80-90s)", d:"'Si querés que te enseñe cómo definir tu gestión de riesgo paso a paso, todo está en El Camino del Rey.'", ex:""}
+    ]
+  },
+  {
+    n:"rent", t:"venta",
+    hook:"15 de 18 alumnos retiraron del trading. Ese es mi número real.",
+    angle:"Prueba social con número concreto. Más creíble que promesas vagas.",
+    struct:[
+      {s:"HOOK (0-5s)", d:"'15 de 18. Ese es el número de mis alumnos que retiraron del trading después de pasar por El Camino del Rey.'", ex:"Decirlo simple. Sin inflación. Sin exageración."},
+      {s:"POR QUÉ EL NÚMERO IMPORTA (5-25s)", d:"Comparás con la estadística general: 90% de traders pierde. Tu número es 83% de éxito.", ex:"'La estadística dice que 9 de cada 10 traders pierde. En mi programa, 15 de 18 retiran. Eso no es suerte.'"},
+      {s:"QUÉ LOS HACE DIFERENTES (25-55s)", d:"Qué hace tu metodología diferente. El acompañamiento personalizado, la corrección de errores, el fondeo.", ex:"'No les doy más videos. Les corrijo los errores específicos que ellos cometen. Eso es lo que cambia el resultado.'"},
+      {s:"EL FONDEO (55-70s)", d:"Mencionás la cuenta de $12k al final como el cierre del círculo.", ex:"'Y al final del programa, los que demuestran que están listos, reciben una cuenta fondeada de $12,000.'"},
+      {s:"OFERTA + CTA (70-90s)", d:"Precio, acceso de por vida, CTA directo.", ex:"'$97. Acceso de por vida. Comunidad. Corrección personalizada. Y la cuenta al final. Link en bio.'"}
+    ]
+  },
+  {
+    n:"rent", t:"alcance",
+    hook:"¿Cuánto se puede retirar del trading siendo consistente?",
+    angle:"Expectativas reales. Sin prometer riqueza. Genera confianza por la honestidad.",
+    struct:[
+      {s:"HOOK (0-4s)", d:"'La pregunta que todo trader quiere responder: ¿cuánto se puede ganar con el trading de forma real?'", ex:"Tono curioso, no vendedor."},
+      {s:"LA RESPUESTA HONESTA (4-30s)", d:"No hay número fijo. Depende del capital, del porcentaje mensual y de la consistencia. Explicás la fórmula.", ex:"'Un trader consistente apunta al 5-10% mensual. Con una cuenta de $10,000, eso es entre $500 y $1,000 al mes. Con una fondeada de $100,000, entre $5,000 y $10,000.'"},
+      {s:"EL FACTOR REAL (30-55s)", d:"Lo que determina cuánto ganás no es la estrategia sino la consistencia. Meses buenos y meses malos.", ex:"'El problema no es hacer el 10% en un mes. El problema es hacer el 5% todos los meses. Eso es lo que distingue un trader de uno que apuesta.'"},
+      {s:"TU CASO (55-70s)", d:"Cuánto retirás vos. Siendo honesto, sin inflar.", ex:"'Yo no voy a darte un número inflado. Te voy a decir lo que yo hago y lo que hacen mis alumnos consistentes.'"},
+      {s:"CTA (70-80s)", d:"'¿Querés aprender cómo llegar a esa consistencia? Comentá TRADING abajo.'", ex:""}
+    ]
+  }
+];
+
+// ============================================================
+// ESTADO
+// ============================================================
+let fN="all",fT="all",fAN="all",anaType="analizar";
+let shown=[],saved=JSON.parse(localStorage.getItem('wt_saved')||'[]');
+let apiKey=localStorage.getItem('wt_gemini_key')||'';
+const NL={fondeo:"Fondeo",simple:"Trading simple",rent:"Rentabilidad"};
+const TL={edu:"Educativo",story:"Storytelling",venta:"Venta",alcance:"Alcance"};
+
+// ============================================================
+// KEY
+// ============================================================
+function updateKeyUI(){
+  const dot=document.getElementById('key-dot');
+  const lbl=document.getElementById('key-label');
+  if(apiKey){dot.className='key-dot ok';lbl.textContent='API conectada';}
+  else{dot.className='key-dot';lbl.textContent='Configurar API';}
+}
+function openModal(){document.getElementById('modal').classList.add('open');document.getElementById('api-key-input').value=apiKey;}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function saveKey(){
+  const v=document.getElementById('api-key-input').value.trim();
+  if(!v){alert('Pegá tu API key primero.');return;}
+  apiKey=v;localStorage.setItem('wt_gemini_key',v);
+  updateKeyUI();closeModal();
+}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+// ============================================================
+// TABS & FILTERS
+// ============================================================
+function sw(name){
+  const names=['gen','expand','analyze','saved'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('v-'+name).classList.add('active');
+  if(name==='saved')renderSaved();
+}
+function setF(kind,el){
+  const map={n:'nf',t:'tf',an:'ana-niche'};
+  document.querySelectorAll('#'+map[kind]+' .fbtn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  if(kind==='n')fN=el.dataset.v;
+  else if(kind==='t')fT=el.dataset.v;
+  else fAN=el.dataset.v;
+}
+function toggleMulti(el){el.classList.toggle('on');}
+function setAna(el){
+  document.querySelectorAll('#ana-type .fbtn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');anaType=el.dataset.v;
+}
+
+// ============================================================
+// GEN IDEAS (banco)
+// ============================================================
+function genIdeas(){
+  let pool=IDEAS.filter(i=>(fN==='all'||i.n===fN)&&(fT==='all'||i.t===fT));
+  if(!pool.length){
+    document.getElementById('ideas-out').innerHTML='<div class="empty"><span class="empty-icon">🔍</span>No hay ideas con esa combinación. Cambiá los filtros.</div>';
+    return;
+  }
+  const shuffled=pool.sort(()=>Math.random()-.5).slice(0,3);
+  shown=shuffled;
+  renderIdeas(shuffled,'ideas-out',true);
+}
+
+function renderIdeas(list,cid,saveable){
+  const c=document.getElementById(cid);
+  c.innerHTML='';
+  list.forEach((idea,i)=>{
+    const isSaved=saved.some(s=>s.hook===idea.hook);
+    const d=document.createElement('div');
+    d.className='idea-card';
+    d.style.animationDelay=(i*0.08)+'s';
+    // build struct HTML
+    const stepsHTML=(idea.struct||[]).map((st,si)=>`
+      <li>
+        <span class="step-num">${si+1}</span>
+        <div>
+          <strong style="color:var(--text);font-size:12px">${st.s}</strong><br>
+          <span>${st.d}</span>
+          ${st.ex?`<div class="struct-example">💬 Ejemplo: "${st.ex}"</div>`:''}
+        </div>
+      </li>`).join('');
+    d.innerHTML=`
+      <div class="idea-meta">
+        <span class="tag tag-n">${NL[idea.n]||idea.n}</span>
+        <span class="tag tag-t">${TL[idea.t]||idea.t}</span>
+      </div>
+      <div class="idea-hook">${idea.hook}</div>
+      <div class="idea-angle">${idea.angle}</div>
+      <div class="idea-actions">
+        <span class="link-btn" onclick="toggleStruct('sb-${cid}-${i}',this)">▾ Ver estructura detallada</span>
+        ${saveable?`<button class="save-btn ${isSaved?'saved':''}" onclick="saveIdea(${i},'${cid}',this)">${isSaved?'✓ Guardada':'+ Guardar'}</button>`:''}
+      </div>
+      <div class="struct-box" id="sb-${cid}-${i}">
+        <div class="struct-title">Estructura y guión sugerido</div>
+        <ul class="struct-steps">${stepsHTML}</ul>
+      </div>`;
+    c.appendChild(d);
+  });
+}
+
+function toggleStruct(id,btn){
+  const b=document.getElementById(id);
+  b.classList.toggle('open');
+  btn.textContent=b.classList.contains('open')?'▴ Ocultar estructura':'▾ Ver estructura detallada';
+}
+
+// ============================================================
+// SAVE
+// ============================================================
+function saveIdea(i,cid,btn){
+  const idea=cid==='ideas-out'?shown[i]:shown[i];
+  if(!idea)return;
+  if(saved.some(s=>s.hook===idea.hook)){
+    saved=saved.filter(s=>s.hook!==idea.hook);
+    if(btn){btn.className='save-btn';btn.textContent='+ Guardar';}
+  }else{
+    saved.push(idea);
+    if(btn){btn.className='save-btn saved';btn.textContent='✓ Guardada';}
+  }
+  localStorage.setItem('wt_saved',JSON.stringify(saved));
+  updateSC();
+}
+
+function updateSC(){
+  const b=document.getElementById('sc');
+  if(saved.length>0){b.style.display='inline';b.textContent=saved.length;}
+  else{b.style.display='none';}
+}
+
+function renderSaved(){
+  const c=document.getElementById('saved-list');
+  if(!saved.length){
+    c.innerHTML='<div class="empty"><span class="empty-icon">📌</span>Todavía no guardaste ninguna idea.<br>Generá ideas y tocá "+ Guardar".</div>';
+    return;
+  }
+  c.innerHTML='';
+  saved.forEach((idea,i)=>{
+    const stepsText=(idea.struct||[]).map((s,n)=>`${n+1}. ${s.s}: ${s.d}`).join('\n');
+    const d=document.createElement('div');
+    d.className='saved-item';
+    d.innerHTML=`
+      <div class="saved-body">
+        <div class="saved-meta">${NL[idea.n]||idea.n} · ${TL[idea.t]||idea.t}</div>
+        <div class="saved-hook">${idea.hook}</div>
+        <div class="saved-struct">${idea.angle}</div>
+      </div>
+      <div class="saved-actions">
+        <button class="copy-btn" onclick="copyIdea(${i})">Copiar</button>
+        <button class="del-btn" onclick="delIdea(${i})">✕</button>
+      </div>`;
+    c.appendChild(d);
+  });
+}
+
+function copyIdea(i){
+  const idea=saved[i];
+  const stepsText=(idea.struct||[]).map((s,n)=>`${n+1}. ${s.s}: ${s.d}${s.ex?'\n   Ejemplo: '+s.ex:''}`).join('\n');
+  const text=`HOOK: ${idea.hook}\n\nÁNGULO: ${idea.angle}\n\nESTRUCTURA:\n${stepsText}`;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.querySelectorAll('.copy-btn')[i];
+    if(btn){const orig=btn.textContent;btn.textContent='✓ Copiado';setTimeout(()=>btn.textContent=orig,1500);}
+  }).catch(()=>{});
+}
+
+function delIdea(i){
+  saved.splice(i,1);
+  localStorage.setItem('wt_saved',JSON.stringify(saved));
+  updateSC();renderSaved();
+}
+
+// ============================================================
+// GEMINI API
+// ============================================================
+const SYSTEM_CTX=`Sos un experto en marketing de contenidos para trading en LATAM. Trabajás con la marca personal de Williams Ramos, trader rentable de El Salvador que enseña El Camino del Rey.
+
+CONTEXTO:
+- Empezó en 2021 con binarias, lo estafaron con su primer curso de $100
+- Tardó 3 años en ser rentable, hoy retira consistentemente
+- 15 de 18 alumnos retiran del trading (83%+)
+- +$100k en fondeos entregados, +$100k en retiros de alumnos
+- Mecanismo: El Camino del Rey (4 módulos + 50+ clases + cuenta fondeo $12k al finalizar)
+- Productos: Acompañamiento grupal $97 | Mentoría personalizada $247 (ambos con acceso de por vida)
+
+NICHOS: Cuentas de fondeo | Trading sin complicaciones | Rentabilidad consistente
+
+TONO: Directo, honesto, cercano, retador, con humor. Nunca corporativo. Nunca "simplemente" ni "es fácil". Trato directo, sin formalidades latinoamericanas exageradas.
+
+SIEMPRE respondé en español latino. Sé concreto y accionable.`;
+
+async function callGemini(prompt,btnId,errId){
+  if(!apiKey){
+    openModal();
+    return null;
+  }
+  const btn=document.getElementById(btnId);
+  const origText=btn.innerHTML;
+  btn.disabled=true;
+  btn.innerHTML='<div class="spinner"></div>';
+  document.getElementById(errId).classList.remove('open');
+  try{
+    const resp=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        system_instruction:{parts:[{text:SYSTEM_CTX}]},
+        contents:[{role:'user',parts:[{text:prompt}]}],
+        generationConfig:{maxOutputTokens:1500,temperature:0.85}
+      })
+    });
+    const data=await resp.json();
+    if(data.error){throw new Error(data.error.message);}
+    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'Sin respuesta.';
+    return text;
+  }catch(e){
+    const err=document.getElementById(errId);
+    err.textContent='⚠ '+e.message+'. Revisá que tu API key sea correcta o que tengas conexión.';
+    err.classList.add('open');
+    return null;
+  }finally{
+    btn.disabled=false;btn.innerHTML=origText;
+  }
+}
+
+async function genAI(){
+  const nicho=fN==='all'?'los 3 nichos (fondeo, trading simple, rentabilidad)':({fondeo:'cuentas de fondeo',simple:'trading sin complicaciones',rent:'rentabilidad consistente'}[fN]);
+  const tipo=fT==='all'?'variando entre educativo, storytelling, venta y alcance':({edu:'educativo',story:'storytelling',venta:'ventas',alcance:'alcance viral'}[fT]);
+  const prompt=`Generá 3 ideas de contenido ÚNICAS y ORIGINALES para Williams Ramos sobre ${nicho}, ${tipo}.
+
+Para CADA idea incluí exactamente este formato:
+
+🎯 NICHO: [nombre]
+📌 TIPO: [tipo]
+⚡ HOOK (primeros 3-5 segundos): [el gancho exacto que diría en cámara]
+📖 ÁNGULO: [de qué trata y cómo lo desarrolla]
+🎬 ESTRUCTURA DETALLADA:
+1. [nombre del bloque] (tiempo estimado): [qué dice y hace]
+   💬 Ejemplo: "[frase real que podría decir]"
+2. [siguiente bloque]...
+💡 CTA: [llamada a acción exacta]
+🔥 POR QUÉ FUNCIONA: [una línea]
+
+---
+
+Basate en su historia real: empezó con binarias, lo estafaron, tardó 3 años, hoy es rentable y forma traders.`;
+
+  const result=await callGemini(prompt,'aibtn','gen-err');
+  if(result){
+    const out=document.getElementById('ideas-out');
+    out.innerHTML=`<div class="result-box open"><div class="result-label">✦ Ideas generadas por IA · Gemini</div><div class="result-content">${result}</div></div>`;
+  }
+}
+
+async function expandIdea(){
+  const idea=document.getElementById('user-idea').value.trim();
+  if(!idea){alert('Escribí tu idea o tema primero.');return;}
+  const nichos=[...document.querySelectorAll('#en-filters .fbtn.on')].map(b=>({fondeo:'cuentas de fondeo',simple:'trading simple',rent:'rentabilidad'}[b.dataset.v]||b.dataset.v));
+  const tipos=[...document.querySelectorAll('#et-filters .fbtn.on')].map(b=>b.dataset.v);
+  const prompt=`Tengo esta idea de contenido: "${idea}"
+
+Expandila y adaptala para Williams Ramos en estas combinaciones:
+Nichos: ${nichos.join(', ')||'fondeo, trading simple, rentabilidad'}
+Tipos: ${tipos.join(', ')||'educativo, storytelling, venta, alcance'}
+
+Para cada combinación relevante generá:
+⚡ HOOK adaptado al nicho (los primeros 3-5 segundos exactos)
+📖 ÁNGULO específico (de qué trata en ese contexto)
+🎬 ESTRUCTURA DETALLADA con tiempos y ejemplos de qué decir en cada bloque
+💬 Una frase real de ejemplo para el bloque más importante
+💡 CTA recomendado
+
+Sé muy concreto. Nada genérico. Usa el tono de Williams: directo, retador, honesto, con humor.`;
+  const result=await callGemini(prompt,'exp-btn','exp-err');
+  if(result){
+    const out=document.getElementById('exp-out');
+    out.innerHTML=`<div class="result-label">✦ Idea expandida · Gemini</div><div class="result-content">${result}</div>`;
+    out.classList.add('open');
+  }
+}
+
+async function analyzeVideo(){
+  const desc=document.getElementById('video-desc').value.trim();
+  const url=document.getElementById('url-input').value.trim();
+  if(!desc&&!url){alert('Describí el video o pegá el link de referencia.');return;}
+  const nicho=fAN==='all'?'todos los nichos':({fondeo:'cuentas de fondeo',simple:'trading simple',rent:'rentabilidad'}[fAN]||'todos');
+  const contenido=desc||(url?`Video referenciado en: ${url}`:'');
+  let prompt='';
+  if(anaType==='analizar'||anaType==='ambos'){
+    prompt+=`Analizá este contenido de video/perfil de trading:\n"${contenido}"\n\nDame:\n🎣 HOOK ANALYSIS: Qué dice en los primeros 3 segundos y por qué funciona para detener el scroll\n🏗 ESTRUCTURA: Cómo está organizado el video (bloques y tiempos aproximados)\n⏱ RETENCIÓN: Qué técnicas usa para que no cierren el video\n💬 ENGAGEMENT: Qué genera comentarios e interacción (palabras, preguntas, controversia)\n✅ PUNTOS FUERTES: Qué hace bien (sé específico)\n⚠ PUNTOS DÉBILES: Qué mejorarías y por qué\n`;
+  }
+  if(anaType==='generar'||anaType==='ambos'){
+    prompt+=`\nBasándote en este análisis, generá 3 ideas de contenido para Williams Ramos adaptadas a ${nicho}, con el mismo potencial de engagement pero en su voz y sus nichos. Para cada idea incluí hook exacto, ángulo, estructura detallada con ejemplos de qué decir y CTA.\n`;
+  }
+  const result=await callGemini(prompt,'ana-btn','ana-err');
+  if(result){
+    const out=document.getElementById('ana-out');
+    out.innerHTML=`<div class="result-label">✦ Análisis IA · Gemini</div><div class="result-content">${result}</div>`;
+    out.classList.add('open');
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+updateKeyUI();
+updateSC();
+genIdeas();
+</script>
+</body>
+</html>
